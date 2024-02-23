@@ -9,6 +9,7 @@ public class SpawnManager : MonoBehaviour
     private float xRange = 10f;
     private float zRange = 10f;
     private int enemyCount = 5;
+    private int enemiesAlive;
 
     void Start()
     {
@@ -17,7 +18,8 @@ public class SpawnManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        enemiesAlive = GameObject.FindGameObjectsWithTag("Enemy").Length;
+        if (enemiesAlive == 0)
         {
             SpawnEnemies();
         }

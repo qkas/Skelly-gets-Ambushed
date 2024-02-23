@@ -5,43 +5,70 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    public GameObject attackPrefab;
+    public GameObject meleeAttackPrefab;
+    public GameObject rangedAttackPrefab;
     public Rigidbody rb;
-    public float attackCooldown = .5f;
-    private float attackTimer = 0;
+    public float meleeAttackCooldown = .1f;
+    private float meleeAttackTimer = 0;
+    public float rangedAttackCooldown = 1.0f;
+    private float rangedAttackTimer = 0;
     public float moveSpeed = 6;
     public float rotationSpeed = 10f;
     private Vector3 moveInput;
+    private Vector3 mousePosition;
+    Quaternion lookRotation;
 
     void Start()
     {
-        // first attack ready from start
-        attackTimer = attackCooldown;
+        // attacks ready at start
+        meleeAttackTimer = meleeAttackCooldown;
+        rangedAttackTimer = rangedAttackCooldown;
     }
 
     private void Update()
     {
-        attackTimer += Time.deltaTime;
-        if (Input.GetKeyDown(KeyCode.Mouse0) && attackTimer >= attackCooldown)
+        // melee attack
+        meleeAttackTimer += Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.Mouse0) && meleeAttackTimer >= meleeAttackCooldown)
         {
             Vector3 spawnPos = transform.position + transform.forward;
-            Instantiate(attackPrefab, spawnPos, transform.rotation);
-            attackTimer = 0;
+            Instantiate(meleeAttackPrefab, spawnPos, transform.rotation);
+            meleeAttackTimer = 0;
+        }
+        rangedAttackTimer += Time.deltaTime;
+
+        // ranged attack
+        if (Input.GetKeyDown(KeyCode.Mouse1) && rangedAttackTimer >= rangedAttackCooldown)
+        {
+            Vector3 spawnPos = transform.position + transform.forward;
+            Instantiate(rangedAttackPrefab, spawnPos, lookRotation);
+            rangedAttackTimer = 0;
         }
     }
 
     void FixedUpdate()
     {
+        // get movement input
         moveInput.x = Input.GetAxisRaw("Horizontal");
         moveInput.z = Input.GetAxisRaw("Vertical");
 
-        if (moveInput.magnitude > 0)
+        // convert mouse position to world coordinates
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Plane plane = new Plane(Vector3.up, transform.position);
+        if (plane.Raycast(ray, out float distance))
         {
-            Quaternion targetRotation = Quaternion.LookRotation(moveInput.normalized);
-            Quaternion newRotation = Quaternion.Lerp(rb.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
-            rb.MoveRotation(newRotation);
+            mousePosition = ray.GetPoint(distance);
         }
 
+        // calculate rotation towards cursor
+        Vector3 lookDirection = mousePosition - transform.position;
+        lookDirection.y = 0f; // lock y axis
+        lookRotation = Quaternion.LookRotation(lookDirection);
+
+        // rotate the player smoothly towards cursor
+        rb.MoveRotation(Quaternion.Slerp(rb.rotation, lookRotation, rotationSpeed * Time.fixedDeltaTime));
+
+        // move the player
         rb.velocity = moveInput.normalized * moveSpeed;
     }
 }
