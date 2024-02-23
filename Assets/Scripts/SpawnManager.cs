@@ -6,6 +6,7 @@ public class SpawnManager : MonoBehaviour
 {
     public GameObject enemyPrefab;
     public GameObject player;
+    private float spawnDistance = 5f;
     private float xRange = 10f;
     private float zRange = 10f;
     private int enemyCount = 5;
@@ -29,8 +30,13 @@ public class SpawnManager : MonoBehaviour
     {
         for (int i = 0; i < enemyCount; i++)
         {
-            // generate spawn position
-            Vector3 spawnPos = new Vector3(Random.Range(-xRange, xRange), 0, Random.Range(-zRange, zRange));
+            Vector3 spawnPos;
+            float distance;
+            do
+            {
+                spawnPos = new Vector3(Random.Range(-xRange, xRange), 0, Random.Range(-zRange, zRange));
+                distance = Vector3.Distance(spawnPos, player.transform.position);
+            } while (distance < spawnDistance);
 
             // generate spawn rotation
             Vector3 direction = (player.transform.position - spawnPos).normalized;
