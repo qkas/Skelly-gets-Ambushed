@@ -453,22 +453,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 4935080134556233005, guid: 56e72555abf26d74cb79f2bd796ddc86, type: 3}
-      propertyPath: rotationSpeed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 4935080134556233005, guid: 56e72555abf26d74cb79f2bd796ddc86, type: 3}
-      propertyPath: attackCooldown
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4935080134556233005, guid: 56e72555abf26d74cb79f2bd796ddc86, type: 3}
-      propertyPath: meleeAttackPrefab
-      value: 
-      objectReference: {fileID: 5584001758090533238, guid: 2f5de9e4806924d44ba0997dceb48cdc, type: 3}
-    - target: {fileID: 4935080134556233005, guid: 56e72555abf26d74cb79f2bd796ddc86, type: 3}
-      propertyPath: rangedAttackPrefab
-      value: 
-      objectReference: {fileID: 5584001758090533238, guid: 2237c90337e619749b71aba9adcc949b, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56e72555abf26d74cb79f2bd796ddc86, type: 3}
 --- !u!1 &1833535581

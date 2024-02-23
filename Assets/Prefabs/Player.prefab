@@ -127,7 +127,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96fc2c4fd97154a49bacbbb93bd2ffce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackPrefab: {fileID: 5584001758090533238, guid: 2f5de9e4806924d44ba0997dceb48cdc, type: 3}
+  meleeAttackPrefab: {fileID: 5584001758090533238, guid: 2f5de9e4806924d44ba0997dceb48cdc, type: 3}
+  rangedAttackPrefab: {fileID: 5584001758090533238, guid: 2237c90337e619749b71aba9adcc949b, type: 3}
   rb: {fileID: 4935080134556233006}
-  attackCooldown: 0.5
+  meleeAttackCooldown: 0.1
+  rangedAttackCooldown: 1
   moveSpeed: 6
+  rotationSpeed: 10
