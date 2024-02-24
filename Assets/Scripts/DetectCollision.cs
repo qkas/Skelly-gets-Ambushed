@@ -6,6 +6,7 @@ using UnityEngine;
 public class DetectCollision : MonoBehaviour
 {
     public bool destroySelf = false;
+    public float damage;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -15,7 +16,12 @@ public class DetectCollision : MonoBehaviour
             {
                 Destroy(gameObject);
             }
-            Destroy(other.gameObject);
+
+            Enemy enemy = other.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+            }
         }
     }
 }

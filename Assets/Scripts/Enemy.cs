@@ -10,6 +10,11 @@ public class Enemy : MonoBehaviour
     public float rotationSpeed = 5f;
     private Vector3 moveDirection;
 
+    public GameObject attackPrefab;
+    public float attackRange = 0.2f;
+    public float meleeAttackCooldown = 0.2f;
+    private float meleeAttackTimer = 0;
+
     private float health, maxHealth = 100;
 
     void Start()
@@ -19,6 +24,17 @@ public class Enemy : MonoBehaviour
 
         // find target (player)
         target = GameObject.FindGameObjectWithTag("Player");
+    }
+    private void Update()
+    {
+        // melee attack
+        meleeAttackTimer += Time.deltaTime;
+        if ((rb.transform.position - target.transform.position).magnitude < attackRange+1 && meleeAttackTimer >= meleeAttackCooldown)
+        {
+            Vector3 spawnPos = transform.position + transform.forward;
+            Instantiate(attackPrefab, spawnPos, transform.rotation);
+            meleeAttackTimer = 0;
+        }
     }
 
     private void FixedUpdate()
@@ -36,6 +52,7 @@ public class Enemy : MonoBehaviour
             rb.velocity = moveDirection * moveSpeed;
         }
     }
+
     public void TakeDamage(float damage)
     {
         // take damage

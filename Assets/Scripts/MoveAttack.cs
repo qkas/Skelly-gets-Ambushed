@@ -16,7 +16,6 @@ public class MoveAttack : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
     }
 
     void FixedUpdate()
