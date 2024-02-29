@@ -36,7 +36,8 @@ public class PlayerControl : MonoBehaviour
     {
         // melee attack
         meleeAttackTimer += Time.deltaTime;
-        if (Input.GetKeyDown(KeyCode.Mouse0) && meleeAttackTimer >= meleeAttackCooldown)
+        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.K))
+            && meleeAttackTimer >= meleeAttackCooldown)
         {
             Vector3 spawnPos = transform.position + transform.forward;
             Instantiate(meleeAttackPrefab, spawnPos, transform.rotation);
@@ -45,7 +46,8 @@ public class PlayerControl : MonoBehaviour
 
         // ranged attack
         rangedAttackTimer += Time.deltaTime;
-        if (Input.GetKeyDown(KeyCode.Mouse1) && rangedAttackTimer >= rangedAttackCooldown)
+        if ((Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.L))
+            && rangedAttackTimer >= rangedAttackCooldown)
         {
             Vector3 spawnPos = transform.position + transform.forward;
             Instantiate(rangedAttackPrefab, spawnPos, lookRotation);
@@ -83,6 +85,9 @@ public class PlayerControl : MonoBehaviour
     {
         // take damage
         health -= damage;
+
+        // get knocked back
+        //
 
         // die if health 0
         if (health <= 0)

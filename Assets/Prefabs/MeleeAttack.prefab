@@ -129,6 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroySelf: 0
+  damage: 35
 --- !u!114 &3650300059403575424
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -29,11 +29,14 @@ public class Enemy : MonoBehaviour
     {
         // melee attack
         meleeAttackTimer += Time.deltaTime;
-        if ((rb.transform.position - target.transform.position).magnitude < attackRange+1 && meleeAttackTimer >= meleeAttackCooldown)
+        if (target)
         {
-            Vector3 spawnPos = transform.position + transform.forward;
-            Instantiate(attackPrefab, spawnPos, transform.rotation);
-            meleeAttackTimer = 0;
+            if ((rb.transform.position - target.transform.position).magnitude < attackRange+1 && meleeAttackTimer >= meleeAttackCooldown)
+            {
+                Vector3 spawnPos = transform.position + transform.forward;
+                Instantiate(attackPrefab, spawnPos, transform.rotation);
+                meleeAttackTimer = 0;
+            }
         }
     }
 
@@ -57,6 +60,9 @@ public class Enemy : MonoBehaviour
     {
         // take damage
         health -= damage;
+
+        // get knocked back
+        //
 
         // die if health 0
         if (health <= 0)
