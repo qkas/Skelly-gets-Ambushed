@@ -3,24 +3,20 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class DetectCollision : MonoBehaviour
+public class SwordAttack : MonoBehaviour
 {
-    public bool destroySelf = false;
-    public float damage;
+    public float damage = 35;
+    public float knockStrength = 1000;
+    public float stunTime = 0.3f;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Enemy"))
         {
-            if (destroySelf)
-            {
-                Destroy(gameObject);
-            }
-
             Enemy enemy = other.GetComponent<Enemy>();
-            if (enemy != null)
+            if (enemy)
             {
-                enemy.TakeDamage(damage);
+                enemy.TakeDamage(damage, knockStrength, stunTime);
             }
         }
     }

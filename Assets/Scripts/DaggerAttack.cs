@@ -2,8 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveAttack : MonoBehaviour
+public class DaggerAttack : MonoBehaviour
 {
+    public float damage = 100;
+    public float knockStrength = 1000;
+    public float stunTime = 0.3f;
+
+
     public Rigidbody rb;
     public float speed = 10;
     private float xRange = 20;
@@ -21,5 +26,18 @@ public class MoveAttack : MonoBehaviour
     void FixedUpdate()
     {
         rb.velocity = transform.forward * speed;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            Enemy enemy = other.GetComponent<Enemy>();
+            if (enemy)
+            {
+                Destroy(gameObject);
+                enemy.TakeDamage(damage, knockStrength, stunTime);
+            }
+        }
     }
 }

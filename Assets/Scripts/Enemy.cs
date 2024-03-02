@@ -5,10 +5,10 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public float moveSpeed = 3f;
+    private bool stunned = false;
     public Rigidbody rb;
     public GameObject target;
     public float rotationSpeed = 5f;
-    private Vector3 moveDirection;
 
     public GameObject attackPrefab;
     public float attackRange = 0.2f;
@@ -45,29 +45,43 @@ public class Enemy : MonoBehaviour
         if (target)
         {
             // get direction of player
-            moveDirection = (target.transform.position - transform.position).normalized;
+            Vector3 moveDirection = (target.transform.position - transform.position).normalized;
 
             // set rotation of enemy
             Quaternion lookDirection = Quaternion.LookRotation(moveDirection);
 
-            // Move and rotate enemy 
+            // rotate and move enemy towards player 
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, lookDirection, rotationSpeed * Time.fixedDeltaTime));
-            rb.velocity = moveDirection * moveSpeed;
+            if (!stunned)
+            {
+                rb.velocity = moveDirection * moveSpeed;
+            }
         }
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, float knockStrength, float stunTime)
     {
         // take damage
         health -= damage;
 
+        // stun player
+        stunned = true;
+        StartCoroutine(StunTimer(stunTime));
+
         // get knocked back
-        //
+        Vector3 awayFromTarget = (transform.position - target.gameObject.transform.position).normalized;
+        rb.AddForce(awayFromTarget * knockStrength, ForceMode.Impulse);
 
         // die if health 0
         if (health <= 0)
         {
             Destroy(gameObject);
         }
+    }
+
+    IEnumerator StunTimer(float stunTime)
+    {
+        yield return new WaitForSeconds(stunTime);
+        stunned = false;
     }
 }

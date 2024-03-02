@@ -81,13 +81,14 @@ public class PlayerControl : MonoBehaviour
         rb.velocity = moveInput.normalized * moveSpeed;
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, float knockStrength, GameObject enemy)
     {
         // take damage
         health -= damage;
 
         // get knocked back
-        //
+        Vector3 awayFromEnemy = (transform.position - enemy.gameObject.transform.position).normalized;
+        rb.AddForce(awayFromEnemy * knockStrength, ForceMode.Impulse);
 
         // die if health 0
         if (health <= 0)
