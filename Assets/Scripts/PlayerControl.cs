@@ -28,8 +28,8 @@ public class PlayerControl : MonoBehaviour
     private Vector3 mousePosition;
     Quaternion lookRotation;
 
-    public float damageDone = 0f;
-    public float damageNeededForDagger = 200f;
+    public float fury = 0f;
+    public float furyNeededForDagger = 500f;
     private float health, maxHealth = 100;
 
     private void Start()
@@ -51,31 +51,7 @@ public class PlayerControl : MonoBehaviour
 
     void FixedUpdate()
     {
-        // get movement input
-        moveInput.x = Input.GetAxisRaw("Horizontal");
-        moveInput.z = Input.GetAxisRaw("Vertical");
-
-        // convert mouse position to world coordinates
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Plane plane = new Plane(Vector3.up, transform.position);
-        if (plane.Raycast(ray, out float distance))
-        {
-            mousePosition = ray.GetPoint(distance);
-        }
-
-        // calculate rotation towards cursor
-        Vector3 lookDirection = mousePosition - transform.position;
-        lookDirection.y = 0f; // lock y axis
-        lookRotation = Quaternion.LookRotation(lookDirection);
-
-        // rotate the player smoothly towards cursor
-        rb.MoveRotation(Quaternion.Slerp(rb.rotation, lookRotation, rotationSpeed * Time.fixedDeltaTime));
-
-        // move the player
-        if (!stunned)
-        {
-            rb.velocity = moveInput.normalized * moveSpeed;
-        }
+        movementAndAim();
     }
 
     IEnumerator StunTimer(float stunTime)
@@ -97,6 +73,37 @@ public class PlayerControl : MonoBehaviour
         if (health <= 0)
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void movementAndAim()
+    {
+        // get movement input
+        moveInput.x = Input.GetAxisRaw("Horizontal");
+        moveInput.z = Input.GetAxisRaw("Vertical");
+
+        // convert mouse position to world coordinates
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Plane plane = new Plane(Vector3.up, transform.position);
+        if (plane.Raycast(ray, out float distance))
+        {
+            mousePosition = ray.GetPoint(distance);
+        }
+
+        // calculate direction of the cursor
+        Vector3 lookDirection = mousePosition - transform.position;
+        lookDirection.y = 0f; // lock y axis
+
+        // get the rotation towards the cursor direction
+        lookRotation = Quaternion.LookRotation(lookDirection);
+
+        // rotate the player smoothly towards cursor
+        rb.MoveRotation(Quaternion.Slerp(rb.rotation, lookRotation, rotationSpeed * Time.fixedDeltaTime));
+
+        // move the player
+        if (!stunned)
+        {
+            rb.velocity = moveInput.normalized * moveSpeed;
         }
     }
 
@@ -139,7 +146,7 @@ public class PlayerControl : MonoBehaviour
 
     private void throwDagger()
     {
-        if (damageDone >= damageNeededForDagger && (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.L)))
+        if (fury >= furyNeededForDagger && (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.L)))
         {
             // play audio
             audioSource.PlayOneShot(throwDaggerSound, 1.0f);
@@ -149,8 +156,8 @@ public class PlayerControl : MonoBehaviour
             Instantiate(dagger, spawnPos, lookRotation);
 
             // reduce dagger progress
-            damageDone -= damageNeededForDagger;
-            damageDone *= 0.5f;
+            fury -= furyNeededForDagger;
+            fury *= 0.5f;
         }
     }
 }
