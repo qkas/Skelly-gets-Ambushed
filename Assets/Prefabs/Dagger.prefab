@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 5584001758090533239}
-  speed: 2000
+  speed: 25
   damage: 100
   knockStrength: 300
   stunTime: 0.2

@@ -6,6 +6,9 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour
 {
     public Rigidbody rb;
+    public AudioSource audioSource;
+    public AudioClip slashSwordSound;
+    public AudioClip throwDaggerSound;
     public GameObject melee;
     public GameObject dagger;
 
@@ -19,7 +22,7 @@ public class PlayerControl : MonoBehaviour
     private bool stunned = false;
     public float stunTime = 0.3f;
 
-    public float moveSpeed = 30f;
+    public float moveSpeed = 5f;
     public float rotationSpeed = 10f;
     private Vector3 moveInput;
     private Vector3 mousePosition;
@@ -71,7 +74,7 @@ public class PlayerControl : MonoBehaviour
         // move the player
         if (!stunned)
         {
-            rb.velocity = moveInput.normalized * moveSpeed * Time.deltaTime;
+            rb.velocity = moveInput.normalized * moveSpeed;
         }
     }
 
@@ -104,9 +107,14 @@ public class PlayerControl : MonoBehaviour
         // dash towards movement input direction if spacebar/shift is pressed and dash is out of cooldown
         if (dashTimer <= 0 && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift)))
         {
+            // play audio
+            audioSource.PlayOneShot(throwDaggerSound, 1.0f);
+
             // prevent general movement while dashing
             stunned = true;
             StartCoroutine(StunTimer(stunTime));
+
+            // dash
             rb.AddForce(moveInput.normalized * dashStrength, ForceMode.Impulse);
 
             dashTimer = dashCooldown;
@@ -118,6 +126,9 @@ public class PlayerControl : MonoBehaviour
         attackTimer -= Time.deltaTime;
         if (attackTimer <= 0 && (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.K)))
         {
+            // play audio
+            audioSource.PlayOneShot(slashSwordSound, 0.6f);
+
             // instantiate attack infront of player
             Vector3 spawnPos = transform.position + transform.forward;
             Instantiate(melee, spawnPos, transform.rotation);
@@ -130,6 +141,9 @@ public class PlayerControl : MonoBehaviour
     {
         if (damageDone >= damageNeededForDagger && (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.L)))
         {
+            // play audio
+            audioSource.PlayOneShot(throwDaggerSound, 1.0f);
+
             // instantiate attack infront of player
             Vector3 spawnPos = transform.position + transform.forward;
             Instantiate(dagger, spawnPos, lookRotation);

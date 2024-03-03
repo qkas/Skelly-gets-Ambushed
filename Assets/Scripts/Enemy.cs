@@ -1,16 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float moveSpeed = 20f;
-    private bool stunned = false;
+    public float moveSpeed = 3f;
+    private bool isStunned = false;
     public Rigidbody rb;
     private GameObject target;
     private PlayerControl playerControlScript;
 
     public float rotationSpeed = 5f;
+
+    public AudioSource audioSource;
+    public AudioClip getHitSound;
+    public AudioClip deathSound;
 
     public GameObject attackPrefab;
     public float attackRange = 1.2f;
@@ -20,6 +25,9 @@ public class Enemy : MonoBehaviour
     private float attackTimer = 1f;
 
     private float health, maxHealth = 100;
+
+    public bool isDead = false;
+    public float dieTime = 1f;
 
     void Start()
     {
@@ -34,7 +42,7 @@ public class Enemy : MonoBehaviour
     {
         // melee attack
         attackTimer -= Time.deltaTime;
-        if (target)
+        if (target && !isStunned && !isDead)
         {
             // if player is in range and cooldown is ready
             if ((rb.transform.position - target.transform.position).magnitude < attackRange && attackTimer <= 0)
@@ -49,7 +57,7 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (target)
+        if (target && !isStunned && !isDead)
         {
             // get direction of player
             Vector3 moveDirection = (target.transform.position - transform.position).normalized;
@@ -59,21 +67,27 @@ public class Enemy : MonoBehaviour
 
             // rotate and move enemy towards player 
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, lookDirection, rotationSpeed * Time.fixedDeltaTime));
-            if (!stunned)
-            {
-                rb.velocity = moveDirection * moveSpeed * Time.deltaTime;
-            }
+
+            // move enemy towards player
+            rb.velocity = moveDirection * moveSpeed;
+        }
+        if (isDead)
+        {
+            rb.velocity = Vector3.zero;
         }
     }
 
     public void TakeDamage(float damage, float knockStrength, float stunTime)
     {
+        // play audio
+        audioSource.PlayOneShot(getHitSound, 0.8f);
+
         // take damage and update player control damage done tracker
         health -= damage;
         playerControlScript.damageDone += damage;
 
         // stun player
-        stunned = true;
+        isStunned = true;
         StartCoroutine(StunTimer(stunTime));
 
         // get knocked back
@@ -83,13 +97,31 @@ public class Enemy : MonoBehaviour
         // die if health 0
         if (health <= 0)
         {
-            Destroy(gameObject);
+            // play death sound
+            audioSource.PlayOneShot(deathSound, 0.8f);
+
+            Die();
         }
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        reduceColorAlpha();
+        gameObject.GetComponent<BoxCollider>().enabled = false;
+    }
+
+    private void reduceColorAlpha()
+    {
+        MeshRenderer mr = gameObject.GetComponent<MeshRenderer>();
+        Color color = mr.material.color;
+        color.a = 0.25f;
+        mr.material.SetColor("_Color", color);
     }
 
     IEnumerator StunTimer(float stunTime)
     {
         yield return new WaitForSeconds(stunTime);
-        stunned = false;
+        isStunned = false;
     }
 }

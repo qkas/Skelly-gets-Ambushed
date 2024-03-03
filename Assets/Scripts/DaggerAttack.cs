@@ -5,7 +5,7 @@ using UnityEngine;
 public class DaggerAttack : MonoBehaviour
 {
     public Rigidbody rb;
-    public float speed = 1000f;
+    public float speed = 20f;
     public float damage = 100f;
     public float knockStrength = 1000f;
     public float stunTime = 0.3f;
@@ -20,7 +20,7 @@ public class DaggerAttack : MonoBehaviour
     void Update()
     {
         // fly forward
-        rb.velocity = transform.forward * speed * Time.deltaTime;
+        rb.velocity = transform.forward * speed;
     }
 
     private void OnTriggerEnter(Collider other)

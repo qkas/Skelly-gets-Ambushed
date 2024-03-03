@@ -6,30 +6,71 @@ public class SpawnManager : MonoBehaviour
 {
     public GameObject enemyPrefab;
     public GameObject player;
-    private float spawnDistance = 5f;
+
+    private float waveEndDelay = 2f;
+    private bool coroutineStarted = false;
+
+    public int startEnemyCount = 5;
+    private int waveCount = 1;
+    private int enemiesToSpawn;
+
     private float xRange = 10f;
     private float zRange = 10f;
-    private int enemyCount = 5;
-    private int enemiesAlive;
-
+    
     void Start()
     {
+        enemiesToSpawn = startEnemyCount;
         SpawnEnemies();
     }
 
     void Update()
     {
-        // check how many enemies are alive
-        enemiesAlive = GameObject.FindGameObjectsWithTag("Enemy").Length;
-        if (enemiesAlive == 0) // spawn new wave if 0 enemies
+        // if all enemies are dead, start new wave after delay
+        if (allEnemiesDead() && !coroutineStarted)
         {
-            SpawnEnemies();
+            // start new wave after delay
+            StartCoroutine(delayNextWave(waveEndDelay));
         }
     }
 
-    void SpawnEnemies()
+    private bool allEnemiesDead()
     {
-        for (int i = 0; i < enemyCount; i++) // for each enemy
+        // check if all enemies are dead
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject enemy in enemies)
+        {
+            Enemy enemyScript = enemy.GetComponent<Enemy>();
+            if (!enemyScript.isDead)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    IEnumerator delayNextWave(float time)
+    {
+        coroutineStarted = true;
+        yield return new WaitForSeconds(time);
+
+        // destroy dead enemies
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject enemy in enemies)
+        {
+            Destroy(enemy);
+        }
+
+        // start new wave
+        waveCount++;
+        SpawnEnemies();
+        coroutineStarted = false;
+    }
+
+    private void SpawnEnemies()
+    {
+        // Spawn new wave of enemies
+        for (int i = 0; i < enemiesToSpawn; i++)
         {
             // generate spawn position
             Vector3 spawnPos = new Vector3(Random.Range(-xRange, xRange), 0, Random.Range(-zRange, zRange));
@@ -42,6 +83,6 @@ public class SpawnManager : MonoBehaviour
             Instantiate(enemyPrefab, spawnPos, spawnRotation);
         }
 
-        enemyCount++;
+        enemiesToSpawn++;
     }
 }
