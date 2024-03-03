@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 5584001758090533232}
   - component: {fileID: 5584001758090533239}
   - component: {fileID: 5584001758090533244}
-  - component: {fileID: 3650300059403575424}
   m_Layer: 0
   m_Name: Sword
   m_TagString: Untagged
@@ -29,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5584001758090533238}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 1, z: 2}
   m_ConstrainProportionsScale: 0
@@ -131,16 +130,4 @@ MonoBehaviour:
   damage: 35
   knockStrength: 300
   stunTime: 0.2
---- !u!114 &3650300059403575424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5584001758090533238}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5d880c329a75744393007bfd2675d14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  upTime: 0.1
+  destroyDelay: 0.05

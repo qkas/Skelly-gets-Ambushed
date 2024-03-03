@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.17757845, g: 0.22232181, b: 0.3045173, a: 1}
+  m_IndirectSpecularColor: {r: 0.17757882, g: 0.2223225, b: 0.30451846, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -454,8 +454,28 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 4935080134556233005, guid: 56e72555abf26d74cb79f2bd796ddc86, type: 3}
+      propertyPath: melee
+      value: 
+      objectReference: {fileID: 5584001758090533238, guid: 2f5de9e4806924d44ba0997dceb48cdc, type: 3}
+    - target: {fileID: 4935080134556233005, guid: 56e72555abf26d74cb79f2bd796ddc86, type: 3}
+      propertyPath: dagger
+      value: 
+      objectReference: {fileID: 5584001758090533238, guid: 2237c90337e619749b71aba9adcc949b, type: 3}
+    - target: {fileID: 4935080134556233005, guid: 56e72555abf26d74cb79f2bd796ddc86, type: 3}
+      propertyPath: weapon
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4935080134556233005, guid: 56e72555abf26d74cb79f2bd796ddc86, type: 3}
       propertyPath: moveSpeed
-      value: 6
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 4935080134556233005, guid: 56e72555abf26d74cb79f2bd796ddc86, type: 3}
+      propertyPath: dashStrength
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 4935080134556233005, guid: 56e72555abf26d74cb79f2bd796ddc86, type: 3}
+      propertyPath: damageNeededForDagger
+      value: 500
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56e72555abf26d74cb79f2bd796ddc86, type: 3}

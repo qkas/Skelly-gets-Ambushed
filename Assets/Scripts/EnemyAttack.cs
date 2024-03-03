@@ -4,11 +4,20 @@ using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
 {
-    public float damage;
-    public float knockStrength = 500;
+    public float damage = 25f;
+    public float knockStrength = 500f;
+    public float stunTime = 0.3f;
+    public float destroyDelay = 0.05f;
+
+    private void Start()
+    {
+        // destroy game object after delay
+        Destroy(gameObject, destroyDelay);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
+        // damage player
         if (other.CompareTag("Player"))
         {
             PlayerControl player = other.GetComponent<PlayerControl>();

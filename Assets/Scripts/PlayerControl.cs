@@ -5,54 +5,45 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    public GameObject meleeAttackPrefab;
-    public GameObject rangedAttackPrefab;
     public Rigidbody rb;
+    public GameObject melee;
+    public GameObject dagger;
 
-    public float meleeAttackCooldown = .1f;
-    private float meleeAttackTimer = 0;
-    public float rangedAttackCooldown = 1.0f;
-    private float rangedAttackTimer = 0;
+    public float attackCooldown = 0.1f;
+    private float attackTimer = 0f;
 
-    public float moveSpeed = 6;
+    public float dashStrength = 200f;
+    public float dashCooldown = 1.0f;
+    private float dashTimer = 0f;
+
+    private bool stunned = false;
+    public float stunTime = 0.3f;
+
+    public float moveSpeed = 30f;
     public float rotationSpeed = 10f;
     private Vector3 moveInput;
     private Vector3 mousePosition;
     Quaternion lookRotation;
 
+    public float damageDone = 0f;
+    public float damageNeededForDagger = 200f;
     private float health, maxHealth = 100;
 
-    void Start()
+    private void Start()
     {
-        // set health to max
         health = maxHealth;
-
-        // attacks ready at start
-        meleeAttackTimer = meleeAttackCooldown;
-        rangedAttackTimer = rangedAttackCooldown;
     }
 
     private void Update()
     {
+        // dash (movement)
+        dash();
+
         // melee attack
-        meleeAttackTimer += Time.deltaTime;
-        if ((Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.K))
-            && meleeAttackTimer >= meleeAttackCooldown)
-        {
-            Vector3 spawnPos = transform.position + transform.forward;
-            Instantiate(meleeAttackPrefab, spawnPos, transform.rotation);
-            meleeAttackTimer = 0;
-        }
+        meleeAttack(); // if 'mouse1' or 'K' pressed
 
         // ranged attack
-        rangedAttackTimer += Time.deltaTime;
-        if ((Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.L))
-            && rangedAttackTimer >= rangedAttackCooldown)
-        {
-            Vector3 spawnPos = transform.position + transform.forward;
-            Instantiate(rangedAttackPrefab, spawnPos, lookRotation);
-            rangedAttackTimer = 0;
-        }
+        throwDagger(); // if 'mouse2' or 'L' pressed
     }
 
     void FixedUpdate()
@@ -78,7 +69,16 @@ public class PlayerControl : MonoBehaviour
         rb.MoveRotation(Quaternion.Slerp(rb.rotation, lookRotation, rotationSpeed * Time.fixedDeltaTime));
 
         // move the player
-        rb.velocity = moveInput.normalized * moveSpeed;
+        if (!stunned)
+        {
+            rb.velocity = moveInput.normalized * moveSpeed * Time.deltaTime;
+        }
+    }
+
+    IEnumerator StunTimer(float stunTime)
+    {
+        yield return new WaitForSeconds(stunTime);
+        stunned = false;
     }
 
     public void TakeDamage(float damage, float knockStrength, GameObject enemy)
@@ -94,6 +94,49 @@ public class PlayerControl : MonoBehaviour
         if (health <= 0)
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void dash()
+    {
+        dashTimer -= Time.deltaTime;
+
+        // dash towards movement input direction if spacebar/shift is pressed and dash is out of cooldown
+        if (dashTimer <= 0 && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift)))
+        {
+            // prevent general movement while dashing
+            stunned = true;
+            StartCoroutine(StunTimer(stunTime));
+            rb.AddForce(moveInput.normalized * dashStrength, ForceMode.Impulse);
+
+            dashTimer = dashCooldown;
+        }
+    }
+
+    private void meleeAttack()
+    {
+        attackTimer -= Time.deltaTime;
+        if (attackTimer <= 0 && (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.K)))
+        {
+            // instantiate attack infront of player
+            Vector3 spawnPos = transform.position + transform.forward;
+            Instantiate(melee, spawnPos, transform.rotation);
+
+            attackTimer = attackCooldown;
+        }
+    }
+
+    private void throwDagger()
+    {
+        if (damageDone >= damageNeededForDagger && (Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.L)))
+        {
+            // instantiate attack infront of player
+            Vector3 spawnPos = transform.position + transform.forward;
+            Instantiate(dagger, spawnPos, lookRotation);
+
+            // reduce dagger progress
+            damageDone -= damageNeededForDagger;
+            damageDone *= 0.5f;
         }
     }
 }

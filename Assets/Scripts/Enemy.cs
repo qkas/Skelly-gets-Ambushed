@@ -4,38 +4,45 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float moveSpeed = 3f;
+    public float moveSpeed = 20f;
     private bool stunned = false;
     public Rigidbody rb;
-    public GameObject target;
+    private GameObject target;
+    private PlayerControl playerControlScript;
+
     public float rotationSpeed = 5f;
 
     public GameObject attackPrefab;
-    public float attackRange = 0.2f;
-    public float meleeAttackCooldown = 0.2f;
-    private float meleeAttackTimer = 0;
+    public float attackRange = 1.2f;
+    public float attackCooldown = 0.2f;
+
+    // can't attack straight after spawning
+    private float attackTimer = 1f;
 
     private float health, maxHealth = 100;
 
     void Start()
     {
-        // set health to max
         health = maxHealth;
 
-        // find target (player)
+        // find target (player) and player controller script
         target = GameObject.FindGameObjectWithTag("Player");
+        playerControlScript = target.GetComponent<PlayerControl>();
     }
+
     private void Update()
     {
         // melee attack
-        meleeAttackTimer += Time.deltaTime;
+        attackTimer -= Time.deltaTime;
         if (target)
         {
-            if ((rb.transform.position - target.transform.position).magnitude < attackRange+1 && meleeAttackTimer >= meleeAttackCooldown)
+            // if player is in range and cooldown is ready
+            if ((rb.transform.position - target.transform.position).magnitude < attackRange && attackTimer <= 0)
             {
+                // instantiate attack infront of self
                 Vector3 spawnPos = transform.position + transform.forward;
                 Instantiate(attackPrefab, spawnPos, transform.rotation);
-                meleeAttackTimer = 0;
+                attackTimer = attackCooldown;
             }
         }
     }
@@ -54,15 +61,16 @@ public class Enemy : MonoBehaviour
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, lookDirection, rotationSpeed * Time.fixedDeltaTime));
             if (!stunned)
             {
-                rb.velocity = moveDirection * moveSpeed;
+                rb.velocity = moveDirection * moveSpeed * Time.deltaTime;
             }
         }
     }
 
     public void TakeDamage(float damage, float knockStrength, float stunTime)
     {
-        // take damage
+        // take damage and update player control damage done tracker
         health -= damage;
+        playerControlScript.damageDone += damage;
 
         // stun player
         stunned = true;

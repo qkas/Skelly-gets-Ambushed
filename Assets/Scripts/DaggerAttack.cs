@@ -4,32 +4,28 @@ using UnityEngine;
 
 public class DaggerAttack : MonoBehaviour
 {
-    public float damage = 100;
-    public float knockStrength = 1000;
-    public float stunTime = 0.3f;
-
-
     public Rigidbody rb;
-    public float speed = 10;
-    private float xRange = 20;
-    private float zRange = 20;
+    public float speed = 1000f;
+    public float damage = 100f;
+    public float knockStrength = 1000f;
+    public float stunTime = 0.3f;
+    public float destroyDelay = 2.0f;
+
+    private void Start()
+    {
+        // destroy game object after delay
+        Destroy(gameObject, destroyDelay);
+    }
 
     void Update()
     {
-        if (transform.position.x < -xRange || transform.position.x > xRange ||
-            transform.position.z < -zRange || transform.position.z > zRange)
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    void FixedUpdate()
-    {
-        rb.velocity = transform.forward * speed;
+        // fly forward
+        rb.velocity = transform.forward * speed * Time.deltaTime;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        // damage enemy
         if (other.CompareTag("Enemy"))
         {
             Enemy enemy = other.GetComponent<Enemy>();

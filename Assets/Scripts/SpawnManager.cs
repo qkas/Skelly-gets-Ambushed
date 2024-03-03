@@ -19,8 +19,9 @@ public class SpawnManager : MonoBehaviour
 
     void Update()
     {
+        // check how many enemies are alive
         enemiesAlive = GameObject.FindGameObjectsWithTag("Enemy").Length;
-        if (enemiesAlive == 0)
+        if (enemiesAlive == 0) // spawn new wave if 0 enemies
         {
             SpawnEnemies();
         }
@@ -28,15 +29,10 @@ public class SpawnManager : MonoBehaviour
 
     void SpawnEnemies()
     {
-        for (int i = 0; i < enemyCount; i++)
+        for (int i = 0; i < enemyCount; i++) // for each enemy
         {
-            Vector3 spawnPos;
-            float distance;
-            do
-            {
-                spawnPos = new Vector3(Random.Range(-xRange, xRange), 0, Random.Range(-zRange, zRange));
-                distance = Vector3.Distance(spawnPos, player.transform.position);
-            } while (distance < spawnDistance);
+            // generate spawn position
+            Vector3 spawnPos = new Vector3(Random.Range(-xRange, xRange), 0, Random.Range(-zRange, zRange));
 
             // generate spawn rotation
             Vector3 direction = (player.transform.position - spawnPos).normalized;
@@ -45,6 +41,7 @@ public class SpawnManager : MonoBehaviour
             // spawn enemy
             Instantiate(enemyPrefab, spawnPos, spawnRotation);
         }
+
         enemyCount++;
     }
 }

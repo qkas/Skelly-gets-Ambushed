@@ -127,8 +127,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b20316aa01a5e346acd48f2264aed50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb: {fileID: 5584001758090533239}
+  speed: 2000
   damage: 100
   knockStrength: 300
   stunTime: 0.2
-  rb: {fileID: 5584001758090533239}
-  speed: 10
+  destroyDelay: 2
