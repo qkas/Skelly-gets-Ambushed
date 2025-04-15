@@ -12,6 +12,9 @@ public class PlayerControl : MonoBehaviour
     public GameObject melee;
     public GameObject dagger;
 
+    public GameObject daggerReadyText;
+    public GameObject gameOverUI;
+
     public float attackCooldown = 0.1f;
     private float attackTimer = 0f;
 
@@ -73,6 +76,7 @@ public class PlayerControl : MonoBehaviour
         if (health <= 0)
         {
             Destroy(gameObject);
+            gameOverUI.SetActive(true);
         }
     }
 
@@ -128,6 +132,16 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
+    public void AddFury(float amount)
+    {
+        fury += amount;
+
+        if (fury >= furyNeededForDagger)
+        {
+            daggerReadyText.SetActive(true);
+        }
+    }
+
     private void meleeAttack()
     {
         attackTimer -= Time.deltaTime;
@@ -158,6 +172,7 @@ public class PlayerControl : MonoBehaviour
             // reduce dagger progress
             fury -= furyNeededForDagger;
             fury *= 0.5f;
+            daggerReadyText.SetActive(false);
         }
     }
 }

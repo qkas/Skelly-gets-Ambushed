@@ -84,7 +84,7 @@ public class Enemy : MonoBehaviour
 
         // take damage and update player control damage done tracker
         health -= damage;
-        playerControlScript.fury += damage;
+        playerControlScript.AddFury(damage);
 
         // stun player
         isStunned = true;

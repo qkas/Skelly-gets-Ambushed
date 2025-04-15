@@ -14,8 +14,8 @@ public class SpawnManager : MonoBehaviour
     private int waveCount = 1;
     private int enemiesToSpawn;
 
-    private float xRange = 10f;
-    private float zRange = 10f;
+    private float xRange = 9f;
+    private float zRange = 9f;
     
     void Start()
     {
